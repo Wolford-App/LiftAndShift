@@ -9,6 +9,7 @@
     <IISExpressUseClassicPipelineMode />
     <UseGlobalApplicationHostFile />
     <LastActiveSolutionConfig>Debug|Any CPU</LastActiveSolutionConfig>
+    <NameOfLastUsedPublishProfile>C:\Users\AlexanderBoemi\OneDrive - Lobra S.r.l\Desktop\ProgettoDevOps\Wolford\LiftAndShift\Code\WolfordV2\WolfordApis\Properties\PublishProfiles\wolfordapis-westeu-dev - Web Deploy1.pubxml</NameOfLastUsedPublishProfile>
   </PropertyGroup>
   <ProjectExtensions>
     <VisualStudio>
