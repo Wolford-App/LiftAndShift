@@ -12,9 +12,9 @@ namespace WolfordApis.Models.AzureModel
     class ManageKeyVault
     {
         private readonly string KeyVaultUrl = ConfigurationManager.AppSettings["KeyVaultUri"];
-        //private readonly string KeyVaultUrl = "https://wolfordkeyvaultwesteudev.vault.azure.net/";
+
         private readonly string EmployConnSecretName = ConfigurationManager.AppSettings["EmployeeSecretName"];
-        //private readonly string EmployConnSecretName = "WolfordEmployeeConnectionString";
+       
         public string GetEmployeeConnectionString()
         {
             SecretClientOptions options = new SecretClientOptions()
