@@ -37,7 +37,7 @@ jobs:
         
       # Create a Build directory
       - name: Create Build Directory
-        run: mkdir _build
+        run: mkdir ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}  
 
       - name: Restore Nuget Package
         run: nuget restore Code/WolfordV2/WolfordApis.sln
