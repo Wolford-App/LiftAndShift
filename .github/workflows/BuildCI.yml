@@ -46,3 +46,17 @@ jobs:
           name: WolfordApis
           path: "./_build"        
       
+  release:
+    needs: build
+    runs-on: [ windows-latest ]
+    steps:
+      - name: Download Artifact from build
+        uses: actions/download-artifact@v3
+        with:
+          name: WolfordApis
+          path: "./_build"      
+          
+          
+          
+          
+          
