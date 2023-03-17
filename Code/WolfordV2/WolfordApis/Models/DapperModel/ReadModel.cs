@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.SqlClient;
 using WolfordApis.Models.AzureModel;
 using WolfordApis.Models.DapperModel.Interfaces;
@@ -11,7 +12,7 @@ namespace WolfordApis.Models.DapperModel
 {
     class ReadModel : IReadModel
     {
-        private readonly string _connection = new ManageKeyVault().GetEmployeeConnectionString();
+        private readonly string _connection;
         private readonly IQueryExecutor _queryExecutor;
 
         public ReadModel(string connection, IQueryExecutor queryExecutor)
