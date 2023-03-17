@@ -54,7 +54,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: WolfordApis
-          path: "./_build"      
           
           
           
