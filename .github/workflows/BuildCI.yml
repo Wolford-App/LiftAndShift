@@ -31,8 +31,11 @@ jobs:
         uses: NuGet/setup-nuget@v1.1.1
       
       - name: Restore Nuget Package
-        run: nuget restore Code/WolfordV2/WolfordApis.sln --configuration Release --no-restore
+        run: nuget restore Code/WolfordV2/WolfordApis.sln
       
       - name: Build the solution
-        run: msbuild Code/WolfordV2/WolfordApis.sln --configuration Release --no-build
+        run: msbuild Code/WolfordV2/WolfordApis.sln --configuration Release --no-restore
+      
+      - name: Publish the solution
+        run: mspublish Code/WolfordV2/WolfordApis.sln --configuration Release --no-build
       
