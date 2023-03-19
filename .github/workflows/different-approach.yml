@@ -16,7 +16,21 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ github.head_ref }}   # checkout the correct branch name
+        fetch-depth: 0                # fetch the whole repo history
+      
+    - name: Git Version
+      id: version
+      uses: codacy/git-version@2.7.1
+
+    - name: Use the version
+      run: |
+        echo ${{ steps.version.outputs.version }}
+    - name: Use the previous version
+      run: |
+        echo ${{ steps.version.outputs.previous-version }}
 
     - name: Setup MSBuild.exe path
       uses: microsoft/setup-msbuild@v1.0.3
@@ -33,19 +47,18 @@ jobs:
         name: build-artifact
         path: Code/WolfordV2/WolfordApis
         
-  # deploy:
-  #   needs: build
-  #   runs-on: windows-latest
-  #
-  #   steps:
-  #   - name: Download build artifact
-  #     uses: actions/download-artifact@v2
-  #     with:
-  #       name: build-artifact
-  #       path: build-artifact
-  #       
-  #   - name: Set MyVariable value
-  #     run: echo "Hello, world!" > MyVariable
+  deploy:
+    needs: build
+    runs-on: windows-latest
+  
+    steps:
+    - name: Download build artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: build-artifact
+        
+    - name: Set MyVariable value
+      run: echo "Hello, world!" > MyVariable
 
 
 
