@@ -52,5 +52,3 @@ jobs:
     - name: Set MyVariable value
       run: echo "Hello, world!" > MyVariable
 
-
-
