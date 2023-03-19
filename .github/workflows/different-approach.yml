@@ -3,7 +3,7 @@ name: Deploy to Azure Web App
 on:
   push:
     branches:
-      - develop
+      - feature/new-build
 
 env:
   # AZURE_WEBAPP_NAME: "your-web-app-name"
@@ -29,8 +29,8 @@ jobs:
         
     - name: Build and publish .NET Framework web app
       run: |
-        dotnet restore
-        dotnet publish -c Release -o "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
+        dotnet restore Code/WolfordV2/WolfordApis.sln
+        dotnet publish Code/WolfordV2/WolfordApis.sln -c Release -o "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
 
     # - name: Deploy to Azure Web App
     #   uses: Azure/webapps-deploy@v2
