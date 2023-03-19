@@ -42,7 +42,8 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: build-artifact
-
+        path: build-artifact
+        
     - name: Set MyVariable value
       run: echo "Hello, world!" > MyVariable
 
