@@ -5,10 +5,10 @@ name: BuildTestCI
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the "develop" branch
-  push:
-    branches: [ "develop" ]
-  # pull_request:
+  # push:
   #   branches: [ "develop" ]
+  pull_request:
+    branches: [ "main" ]
 
 env:
   AZURE_WEBAPP_NAME: aspnet-core-sample-deploy
