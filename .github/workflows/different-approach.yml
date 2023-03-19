@@ -31,7 +31,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: build-artifact
-        path: WolfordApis/bin/Release
+        path: Code/WolfordV2/WolfordApis/bin/Release
         
   # deploy:
   #   needs: build
