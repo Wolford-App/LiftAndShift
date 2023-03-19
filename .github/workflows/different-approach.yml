@@ -31,21 +31,21 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: build-artifact
-        path: MyWebApp/bin/Release
+        path: WolfordApis/bin/Release
         
-  deploy:
-    needs: build
-    runs-on: windows-latest
-
-    steps:
-    - name: Download build artifact
-      uses: actions/download-artifact@v2
-      with:
-        name: build-artifact
-        path: build-artifact
-        
-    - name: Set MyVariable value
-      run: echo "Hello, world!" > MyVariable
+  # deploy:
+  #   needs: build
+  #   runs-on: windows-latest
+  #
+  #   steps:
+  #   - name: Download build artifact
+  #     uses: actions/download-artifact@v2
+  #     with:
+  #       name: build-artifact
+  #       path: build-artifact
+  #       
+  #   - name: Set MyVariable value
+  #     run: echo "Hello, world!" > MyVariable
 
 
 
