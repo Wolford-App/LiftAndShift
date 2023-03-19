@@ -29,32 +29,33 @@ jobs:
     - name: Build the solution
       run: msbuild ${{ env.PATH_SOLUTION }} /p:Configuration=Release
       
-    - name: Determine version number
-      id: version
-      run: |
-        # Determine the version increment based on the branch being committed to
-        if [[ ${{ github.ref }} == refs/heads/main ]]; then
-          increment="major"
-        elif [[ ${{ github.ref }} == refs/heads/release/* ]]; then
-          increment="minor"
-        else
-          increment="patch"
-        fi
-
-        # Get the current version number from the latest Git tag
-        last_tag=$(git describe --abbrev=0 --tags)
-        version=$(echo $last_tag | awk -F'[v.]' '{printf "%d.%d.%d", $2, $3, $4}')
-
-        # Increment the appropriate version number and generate the new tag
-        new_tag=$(semver $increment $version)
-
-        echo "::set-output name=version::$new_tag"
+    # - name: Determine version number
+    #   id: version
+    #   run: |
+    #     # Determine the version increment based on the branch being committed to
+    #     if [[ ${{ github.ref }} == refs/heads/main ]]; then
+    #       increment="major"
+    #     elif [[ ${{ github.ref }} == refs/heads/release/* ]]; then
+    #       increment="minor"
+    #     else
+    #       increment="patch"
+    #     fi
+# 
+    #     # Get the current version number from the latest Git tag
+    #     last_tag=$(git describe --abbrev=0 --tags)
+    #     version=$(echo $last_tag | awk -F'[v.]' '{printf "%d.%d.%d", $2, $3, $4}')
+# 
+    #     # Increment the appropriate version number and generate the new tag
+    #     new_tag=$(semver $increment $version)
+# 
+    #     echo "::set-output name=version::$new_tag"
       
     - name: Archive build artifact
       uses: actions/upload-artifact@v2
       with:
         name: build-artifact
-        path: Code/WolfordV2/WolfordApis-${{ steps.version.outputs.version }}
+        # path: Code/WolfordV2/WolfordApis-${{ steps.version.outputs.version }}
+        path: Code/WolfordV2/WolfordApis
         
   deploy:
     needs: build
