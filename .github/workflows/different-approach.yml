@@ -19,10 +19,6 @@ jobs:
       with:
         ref: ${{ github.head_ref }}   # checkout the correct branch name
         fetch-depth: 0                # fetch the whole repo history
-      
-    - name: Git Version
-      id: version
-      uses: codacy/git-version@2.7.1
 
     - name: Setup MSBuild.exe path
       uses: microsoft/setup-msbuild@v1.0.3
@@ -33,11 +29,18 @@ jobs:
     - name: Build the solution
       run: msbuild ${{ env.PATH_SOLUTION }} /p:Configuration=Release
       
+    - name: Determine version number
+      id: version
+      uses: SemVer-Next/semver-next@v1.1.1
+      with:
+        tagPrefix: v
+        prereleasePrefix: pre
+      
     - name: Archive build artifact
       uses: actions/upload-artifact@v2
       with:
         name: build-artifact
-        path: Code/WolfordV2/WolfordApis
+        path: Code/WolfordV2/WolfordApis-${{ steps.version.outputs.version }}
         
   deploy:
     needs: build
