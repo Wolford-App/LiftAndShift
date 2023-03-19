@@ -31,10 +31,24 @@ jobs:
       
     - name: Determine version number
       id: version
-      uses: SemVer-Next/semver-next@v1.1.1
-      with:
-        tagPrefix: v
-        prereleasePrefix: pre
+      run: |
+        # Determine the version increment based on the branch being committed to
+        if [[ ${{ github.ref }} == refs/heads/main ]]; then
+          increment="major"
+        elif [[ ${{ github.ref }} == refs/heads/release/* ]]; then
+          increment="minor"
+        else
+          increment="patch"
+        fi
+
+        # Get the current version number from the latest Git tag
+        last_tag=$(git describe --abbrev=0 --tags)
+        version=$(echo $last_tag | awk -F'[v.]' '{printf "%d.%d.%d", $2, $3, $4}')
+
+        # Increment the appropriate version number and generate the new tag
+        new_tag=$(semver $increment $version)
+
+        echo "::set-output name=version::$new_tag"
       
     - name: Archive build artifact
       uses: actions/upload-artifact@v2
