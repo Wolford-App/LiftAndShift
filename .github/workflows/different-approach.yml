@@ -2,8 +2,7 @@ name: Deploy to Azure Web App
 
 on:
   push:
-    branches:
-      - feature/new-build
+    branches: [ "develop" ]
 
 env:
   AZURE_WEBAPP_NAME: <your-web-app-name>
