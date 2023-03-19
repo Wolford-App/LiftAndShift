@@ -11,7 +11,7 @@ env:
   PATH_SOLUTION: Code/WolfordV2/WolfordApis.sln
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: windows-latest
 
     steps:
@@ -26,10 +26,25 @@ jobs:
 
     - name: Build the solution
       run: msbuild ${{ env.PATH_SOLUTION }} /p:Configuration=Release
+      
+    - name: Archive build artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: build-artifact
+        path: MyWebApp/bin/Release
+        
+  deploy:
+    needs: build
+    runs-on: windows-latest
 
-    # - name: Publish to Azure Web App
-    #   uses: Azure/webapps-deploy@v2
-    #   with:
-    #     app-name: ${{ env.AZURE_WEBAPP_NAME }}
-    #     package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-    #     publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+    steps:
+    - name: Download build artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: build-artifact
+
+    - name: Set MyVariable value
+      run: echo "Hello, world!" > MyVariable
+
+
+
