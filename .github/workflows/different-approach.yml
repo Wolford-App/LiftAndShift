@@ -6,13 +6,9 @@ on:
       - feature/new-build
 
 env:
-  # AZURE_WEBAPP_NAME: "your-web-app-name"
-  AZURE_WEBAPP_PACKAGE_PATH: "./webapp.zip"
-  AZURE_WEBAPP_SLOT_NAME: "your-slot-name"
-  AZURE_WEBAPP_SUBSCRIPTION_ID: "your-subscription-id"
-  AZURE_WEBAPP_RESOURCE_GROUP: "your-resource-group-name"
-  AZURE_WEBAPP_APP_SERVICE_PLAN_NAME: "your-app-service-plan-name"
-  DOTNET_VERSION: "4.8"
+  AZURE_WEBAPP_NAME: <your-web-app-name>
+  AZURE_WEBAPP_PACKAGE_PATH: ${{ github.workspace }}/MyWebApp.zip
+  PATH_SOLUTION: Code/WolfordV2/WolfordApis.sln
 
 jobs:
   build-and-deploy:
@@ -21,24 +17,19 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-      
-    - name: Setup .NET Framework ${{ env.DOTNET_VERSION }}
-      uses: microsoft/setup-msbuild@v1.0.2
-      with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
-        
-    - name: Build and publish .NET Framework web app
-      run: |
-        dotnet restore Code/WolfordV2/WolfordApis.sln
-        dotnet publish Code/WolfordV2/WolfordApis.sln -c Release -o "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}" -p "code/WolfordV2/WolfordApis/WolfordApis.csproj"
 
-    # - name: Deploy to Azure Web App
+    - name: Setup MSBuild.exe path
+      uses: microsoft/setup-msbuild@v1.0.3
+
+    - name: Restore Nuget Package
+      run: nuget restore ${{ env.PATH_SOLUTION }}
+
+    - name: Build the solution
+      run: msbuild ${{ env.PATH_SOLUTION }} /p:Configuration=Release
+
+    # - name: Publish to Azure Web App
     #   uses: Azure/webapps-deploy@v2
     #   with:
     #     app-name: ${{ env.AZURE_WEBAPP_NAME }}
-    #     slot-name: ${{ env.AZURE_WEBAPP_SLOT_NAME }}
-    #     publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
     #     package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-    #     subscription-id: ${{ env.AZURE_WEBAPP_SUBSCRIPTION_ID }}
-    #     resource-group: ${{ env.AZURE_WEBAPP_RESOURCE_GROUP }}
-    #     app-service-plan: ${{ env.AZURE_WEBAPP_APP_SERVICE_PLAN_NAME }}
+    #     publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
