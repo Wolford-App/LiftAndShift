@@ -17,8 +17,8 @@ jobs:
     steps:
       - name: Group of log lines
         run: |
-            echo $env:GITHUB_ACTION_PATH
-            echo $env:GITHUB_ACTION_PATH/path
+            echo $GITHUB_ACTION_PATH
+            echo $GITHUB_ACTION_PATH+"/path"
 
   
   
