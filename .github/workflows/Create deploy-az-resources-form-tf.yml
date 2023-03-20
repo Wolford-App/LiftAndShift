@@ -1,0 +1,108 @@
+name: Deploy-Azure-Resources
+
+on: 
+  push:
+    brances: ["develop"]
+
+jobs:
+  terraform:
+    env:
+      ARM_CLIENT_ID: ${{secrets.AZ_AD_CLIENT_ID}}
+      ARM_CLIENT_SECRET: ${{secrets.AZ_AD_CLIENT_SECRET}}
+      ARM_SUBSCRIPTION_ID: ${{secrets.AZ_SUBSCRIPTION_ID}}
+      ARM_TENANT_ID: ${{secrets.AZ_ID_TENANT_ID}}
+      ARM_SKIP_PROVIDER_REGISTRATION: true
+  runs-on: windows-latest
+  environment: ${{vars.CURRENT_ENV}}
+
+
+  steps:
+  
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    # Install the latest version of the Terraform CLI
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_wrapper: false
+
+    #Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    - name: Terraform Init
+      run: terraform init
+
+
+    # Checks that all Terraform configuration files adhere to a canonical format
+    # Will fail the build if not
+    - name: Terraform Format
+      run: terraform fmt -check
+
+    # Generates an execution plan for Terraform
+    - name: Terraform Plan
+      id: tf-plan
+      run: |
+        export exitcode=0
+        terraform plan -var="AdminUser=${{secrets.DB_ADMIN_USERNAME}}" -var="AdminPw=${{secrets.DB_ADMIN_PASSWORD}}" -var="SkuName=${{vars.SKUNAME}}" -var="ResGrLocation=${{vars.RESOURCE_GROUP_LOCATION}}" -var="ResGrName=${{vars.RESOURCE_GROUP_NAME}}" -detailed-exitcode -no-color -out tfplan || export exitcode=$?
+        echo "exitcode=$exitcode" >> $GITHUB_OUTPUT
+        
+        if [ $exitcode -eq 1 ]; then
+          echo Terraform Plan Failed!
+          exit 1
+        else 
+          exit 0
+        fi
+
+
+    # Save plan to artifacts  
+    - name: Publish Terraform Plan
+      uses: actions/upload-artifact@v3
+      with:
+        name: tfplan
+        path: tfplan
+   
+    # Create string output of Terraform Plan
+    - name: Create String Output
+      id: tf-plan-string
+      run: |
+        TERRAFORM_PLAN=$(terraform show -no-color tfplan)
+        
+        delimiter="$(openssl rand -hex 8)"
+        echo "summary<<${delimiter}" >> $GITHUB_OUTPUT
+        echo "## Terraform Plan Output" >> $GITHUB_OUTPUT
+        echo "<details><summary>Click to expand</summary>" >> $GITHUB_OUTPUT
+        echo "" >> $GITHUB_OUTPUT
+        echo '```terraform' >> $GITHUB_OUTPUT
+        echo "$TERRAFORM_PLAN" >> $GITHUB_OUTPUT
+        echo '```' >> $GITHUB_OUTPUT
+        echo "</details>" >> $GITHUB_OUTPUT
+        echo "${delimiter}" >> $GITHUB_OUTPUT
+        
+      terraform-apply:
+        name: 'Terraform Apply'
+        runs-on: windows-latest
+        environment: ${{vars.CURRENT_ENV}}
+        needs: [terraform-plan]
+        
+        steps:
+        # Checkout the repository to the GitHub Actions runner
+        - name: Checkout
+          uses: actions/checkout@v3
+
+        # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
+        - name: Setup Terraform
+          uses: hashicorp/setup-terraform@v2
+
+        # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+        - name: Terraform Init
+          run: terraform init
+
+        # Download saved plan from artifacts  
+        - name: Download Terraform Plan
+          uses: actions/download-artifact@v3
+          with:
+            name: tfplan
+
+        # Terraform Apply
+        - name: Terraform Apply
+          run: terraform apply -var="AdminUser=${{secrets.DB_ADMIN_USERNAME}}" -var="AdminPw=${{secrets.DB_ADMIN_PASSWORD}}" -var="SkuName=${{vars.SKUNAME}}" -var="ResGrLocation=${{vars.RESOURCE_GROUP_LOCATION}}" -var="ResGrName=${{vars.RESOURCE_GROUP_NAME}}" -auto-approve tfplan
