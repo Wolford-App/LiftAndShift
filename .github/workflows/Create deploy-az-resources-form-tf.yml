@@ -4,7 +4,24 @@ on:
   push:
     branches: ["develop"]
 
+  
+defaults:
+  run:
+    shell: bash
+
 jobs:
+
+
+  bash-example:
+    runs-on: windows-latest
+    steps:
+      - name: Group of log lines
+        run: |
+            echo ${{env.GITHUB_ACTION_PATH}}
+            echo "ap"
+
+  
+  
   terraform:
     env:
       ARM_CLIENT_ID: ${{secrets.AZ_AD_CLIENT_ID}}
@@ -14,10 +31,7 @@ jobs:
       ARM_SKIP_PROVIDER_REGISTRATION: true
     runs-on: windows-latest
     environment: ${{vars.CURRENT_ENV}}
-  
-    defaults:
-      run:
-        shell: bash
+
       
   
     steps:
@@ -60,7 +74,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: tfplan
-
+      
       # Create string output of Terraform Plan
       - name: Create String Output
         id: tf-plan-string
