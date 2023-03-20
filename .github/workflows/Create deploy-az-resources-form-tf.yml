@@ -17,8 +17,8 @@ jobs:
     steps:
       - name: Group of log lines
         run: |
-            echo "$GITHUB_ACTION_PATH"
-            echo "$GITHUB_ACTION_PATH/path"
+            echo $GITHUB_ACTION_REPOSITORY
+            echo "${GITHUB_ACTION_REPOSITORY}\path"
 
   
   
