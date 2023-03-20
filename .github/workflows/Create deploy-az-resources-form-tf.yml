@@ -12,17 +12,9 @@ defaults:
 jobs:
 
 
-  bash-example:
-    runs-on: windows-latest
-    steps:
-      - name: Group of log lines
-        run: |
-            echo $GITHUB_WORKSPACE
-            echo "${GITHUB_WORKSPACE}\path"
-
   
   
-  terraform:
+  terraform-plan:
     env:
       ARM_CLIENT_ID: ${{secrets.AZ_AD_CLIENT_ID}}
       ARM_CLIENT_SECRET: ${{secrets.AZ_AD_CLIENT_SECRET}}
@@ -77,27 +69,27 @@ jobs:
           path: Code
       
       # Create string output of Terraform Plan
-      - name: Create String Output
-        id: tf-plan-string
-        run: |
-          TERRAFORM_PLAN=$(terraform show -no-color tfplan)
-
-          delimiter="$(openssl rand -hex 8)"
-          echo "summary<<${delimiter}" >> $GITHUB_OUTPUT
-          echo "## Terraform Plan Output" >> $GITHUB_OUTPUT
-          echo "<details><summary>Click to expand</summary>" >> $GITHUB_OUTPUT
-          echo "" >> $GITHUB_OUTPUT
-          echo '```terraform' >> $GITHUB_OUTPUT
-          echo "$TERRAFORM_PLAN" >> $GITHUB_OUTPUT
-          echo '```' >> $GITHUB_OUTPUT
-          echo "</details>" >> $GITHUB_OUTPUT
-          echo "${delimiter}" >> $GITHUB_OUTPUT
+      # - name: Create String Output
+      #   id: tf-plan-string
+      #   run: |
+      #     TERRAFORM_PLAN=$(terraform show -no-color tfplan)
+# 
+      #     delimiter="$(openssl rand -hex 8)"
+      #     echo "summary<<${delimiter}" >> $GITHUB_OUTPUT
+      #     echo "## Terraform Plan Output" >> $GITHUB_OUTPUT
+      #     echo "<details><summary>Click to expand</summary>" >> $GITHUB_OUTPUT
+      #     echo "" >> $GITHUB_OUTPUT
+      #     echo '```terraform' >> $GITHUB_OUTPUT
+      #     echo "$TERRAFORM_PLAN" >> $GITHUB_OUTPUT
+      #     echo '```' >> $GITHUB_OUTPUT
+      #     echo "</details>" >> $GITHUB_OUTPUT
+      #     echo "${delimiter}" >> $GITHUB_OUTPUT
 
   terraform-apply:
     name: "Terraform Apply"
     runs-on: windows-latest
     environment: ${{vars.CURRENT_ENV}}
-    #needs: [terraform-plan]
+    needs: [terraform-plan]
 
     steps:
       # Checkout the repository to the GitHub Actions runner
