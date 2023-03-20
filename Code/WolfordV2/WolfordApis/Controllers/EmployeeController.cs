@@ -1,12 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using System.Web.Http;
 using WolfordApis.Models.DapperModel;
 using WolfordApis.Models.DapperModel.Interfaces;
 using WolfordApis.Models.DapperModel.QueryModels;
 using WolfordApis.Models.EmployeeModel;
 
-namespace WolforeApis.Controllers
+namespace WolfordApis.Controllers
 {
     public class EmployeeController : ApiController
     {
@@ -17,9 +20,7 @@ namespace WolforeApis.Controllers
             _readModel = readModel;
 
         }
-   
 
-        //SELECT
         public IActionResult Get()
         {
             var response = this._readModel.GetAllEmployees(QueryTypeEnum.Select);
@@ -57,10 +58,6 @@ namespace WolforeApis.Controllers
             this._readModel.DeleteEmployee(QueryTypeEnum.Delete, id);
             return new OkObjectResult("200:Ok"); ;
         }
-
-
-
-
 
     }
 }
