@@ -14,7 +14,12 @@ jobs:
       ARM_SKIP_PROVIDER_REGISTRATION: true
     runs-on: windows-latest
     environment: ${{vars.CURRENT_ENV}}
-
+  
+    defaults:
+      run:
+        shell: bash
+      
+  
     steps:
       # Checkout the repository to the GitHub Actions runner
       - name: Checkout
@@ -43,7 +48,7 @@ jobs:
           terraform plan -var="AdminUser=${{secrets.DB_ADMIN_USERNAME}}" -var="AdminPw=${{secrets.DB_ADMIN_PASSWORD}}" -var="SkuName=${{vars.SKUNAME}}" -var="ResGrLocation=${{vars.RESOURCE_GROUP_LOCATION}}" -var="ResGrName=${{vars.RESOURCE_GROUP_NAME}}" -detailed-exitcode -no-color -out tfplan || export exitcode=$?
           echo "exitcode=$exitcode" >> $GITHUB_OUTPUT
 
-          if [ $exitcode -eq 1 ]; then
+          if [$exitcode -eq 1]; then
             echo Terraform Plan Failed!
             exit 1
           else 
