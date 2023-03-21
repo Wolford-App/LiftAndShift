@@ -35,13 +35,13 @@ jobs:
         terraform_wrapper: false
 # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
-      working-directory: .\Arm
+      working-directory: ${{vars.TERRAFORM_MAIN_PATH}}
       run: terraform init
 # Generates an execution plan for Terraform
     - name: Terraform Plan
-      working-directory: .\Arm
+      working-directory: ${{vars.TERRAFORM_MAIN_PATH}}
       run: terraform plan -var="AdminUser=${{secrets.DB_ADMIN_USERNAME}}" -var="AdminPw=${{secrets.DB_ADMIN_PASSWORD}}" -var="SkuName=${{vars.SKUNAME}}" -var="ResGrLocation=${{vars.RESOURCE_GROUP_LOCATION}}" -var="ResGrName=${{vars.RESOURCE_GROUP_NAME}}"
 # Apply Terraform changes
     - name: Terraform Apply
-      working-directory: .\Arm
+      working-directory: ${{vars.TERRAFORM_MAIN_PATH}}
       run: terraform apply -auto-approve -input=false -var="AdminUser=${{secrets.DB_ADMIN_USERNAME}}" -var="AdminPw=${{secrets.DB_ADMIN_PASSWORD}}" -var="SkuName=${{vars.SKUNAME}}" -var="ResGrLocation=${{vars.RESOURCE_GROUP_LOCATION}}" -var="ResGrName=${{vars.RESOURCE_GROUP_NAME}}"
