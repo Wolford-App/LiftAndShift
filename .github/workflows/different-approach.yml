@@ -4,7 +4,7 @@ on:
   push:
     branches: 
       -develop
-    paths: ${{vars.WEB_APP_MAIN_PATH}}
+    #paths: ${{vars.WEB_APP_MAIN_PATH}}
 env:
   AZURE_WEBAPP_NAME: <your-web-app-name>
   AZURE_WEBAPP_PACKAGE_PATH: ${{ github.workspace }}/MyWebApp.zip
