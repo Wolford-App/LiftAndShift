@@ -38,7 +38,7 @@ jobs:
       run: terraform init
 # Generates an execution plan for Terraform
     - name: Terraform Plan
-      run: terraform plan -input=false -var="AdminUser=${{secrets.DB_ADMIN_USERNAME}}" -var="AdminPw=${{secrets.DB_ADMIN_PASSWORD}}" -var="SkuName=${{vars.SKUNAME}}" -var="ResGrLocation=${{vars.RESOURCE_GROUP_LOCATION}}" -var="ResGrName=${{vars.RESOURCE_GROUP_NAME}}"
+      run: terraform plan -var="AdminUser=${{secrets.DB_ADMIN_USERNAME}}" -var="AdminPw=${{secrets.DB_ADMIN_PASSWORD}}" -var="SkuName=${{vars.SKUNAME}}" -var="ResGrLocation=${{vars.RESOURCE_GROUP_LOCATION}}" -var="ResGrName=${{vars.RESOURCE_GROUP_NAME}}"
 # Apply Terraform changes
     - name: Terraform Apply
       run: terraform apply -auto-approve -input=false -var="AdminUser=${{secrets.DB_ADMIN_USERNAME}}" -var="AdminPw=${{secrets.DB_ADMIN_PASSWORD}}" -var="SkuName=${{vars.SKUNAME}}" -var="ResGrLocation=${{vars.RESOURCE_GROUP_LOCATION}}" -var="ResGrName=${{vars.RESOURCE_GROUP_NAME}}"
