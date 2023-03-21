@@ -20,24 +20,24 @@ permissions:
       contents: read
 
 jobs:
- # build:
-  #  runs-on: windows-latest
-#
-   # steps:
-   # - name: Checkout code
-  #    uses: actions/checkout@v3
-  #    with:
-  #      ref: ${{ github.head_ref }}   # checkout the correct branch name
-  #      fetch-depth: 0                # fetch the whole repo history
-#
-  #  - name: Setup MSBuild.exe path
-  #    uses: microsoft/setup-msbuild@v1.0.3
-#
-  #  - name: Restore Nuget Package
-  #    run: nuget restore ${{ env.PATH_SOLUTION }}
-#
-  #  - name: Build the solution
-  #    run: msbuild ${{ env.PATH_SOLUTION }} /p:Configuration=Release
+ build:
+   runs-on: windows-latest
+
+   steps:
+   - name: Checkout code
+     uses: actions/checkout@v3
+     with:
+       ref: ${{ github.head_ref }}   # checkout the correct branch name
+       fetch-depth: 0                # fetch the whole repo history
+
+   - name: Setup MSBuild.exe path
+     uses: microsoft/setup-msbuild@v1.0.3
+
+   - name: Restore Nuget Package
+     run: nuget restore ${{ env.PATH_SOLUTION }}
+
+   - name: Build the solution
+     run: msbuild ${{ env.PATH_SOLUTION }} /p:Configuration=Release
       
     # - name: Determine version number
     #   id: version
@@ -60,17 +60,17 @@ jobs:
 # 
     #     echo "::set-output name=version::$new_tag"
       
-   # - name: Archive build artifact
-   #   uses: actions/upload-artifact@v2
-   #   with:
-   #     name: build-artifact
-   #     # path: Code/WolfordV2/WolfordApis-${{ steps.version.outputs.version }}
-   #     path: Code/WolfordV2/WolfordApis
+   - name: Archive build artifact
+     uses: actions/upload-artifact@v2
+     with:
+       name: build-artifact
+       # path: Code/WolfordV2/WolfordApis-${{ steps.version.outputs.version }}
+       path: Code/WolfordV2/WolfordApis
         
         
         
-  deploy:
-    #needs: build
+ deploy:
+    needs: build
     runs-on: windows-latest
   
     steps:
