@@ -82,7 +82,7 @@ jobs:
     - name: Get publisher 
       id: save_publish_profile
       run: |
-        $publishProfile = Get-AzWebAppPublishingProfile -ResourceGroupName <resource-group-name> -Name <web-app-name>
+        $publishProfile = Get-AzWebAppPublishingProfile -ResourceGroupName ${{vars.RESOURCE_GROUP_NAME}} -Name ${{env.AZURE_WEBAPP_NAME}}
         Write-Output "::set-output name=publish_profile::$publishProfile"
      
      
