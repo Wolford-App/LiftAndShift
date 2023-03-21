@@ -75,11 +75,17 @@ jobs:
 #      with:
  #       name: build-artifact
      
-     
     - name: Connect to Azure
-      uses: azure/login@v1
+      uses: azure/powershell@v1
       with:
-         creds: '{"clientId":"${{ secrets.AZ_AD_CLIENT_ID }}","clientSecret":"${{ secrets.AZ_AD_CLIENT_SECRET }}","subscriptionId":"${{ secrets.AZ_SUBSCRIPTION_ID }}","tenantId":"${{ secrets.AZ_ID_TENANT_ID }}"}'
+        inlineScript: | 
+         $Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ${{secrets.AZ_AD_CLIENT_ID}}, ConvertTo-SecureString ${{secrets.AZ_AD_CLIENT_SECRET}}
+         Connect-AzAccount -ServicePrincipal -TenantId ${{secrets.AZ_ID_TENANT_ID}} -Credential $Credential
+        azPSVersion: "latest"
+ #  - name: Connect to Azure
+ #    uses: azure/login@v1
+ #    with:
+ #       creds: '{"clientId":"${{ secrets.AZ_AD_CLIENT_ID }}","clientSecret":"${{ secrets.AZ_AD_CLIENT_SECRET }}","subscriptionId":"${{ secrets.AZ_SUBSCRIPTION_ID }}","tenantId":"${{ secrets.AZ_ID_TENANT_ID }}"}'
       
   #   with:
   #         client-id: ${{ env.ARM_CLIENT_ID }}
