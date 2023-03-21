@@ -6,7 +6,7 @@ on: workflow_dispatch
     #  -develop
     #paths: ${{vars.WEB_APP_MAIN_PATH}}
 env:
-  AZURE_WEBAPP_NAME: <your-web-app-name>
+  AZURE_WEBAPP_NAME: ${{ vars.AZURE_WEBAPP_NAME }}
   AZURE_WEBAPP_PACKAGE_PATH: ${{ github.workspace }}/MyWebApp.zip
   PATH_SOLUTION: Code/WolfordV2/WolfordApis.sln
 
@@ -94,7 +94,7 @@ jobs:
     - name: Azure Deploy 
       uses: azure/webapps-deploy@v2
       with:
-          app-name: ${{ vars.AZURE_WEBAPP_NAME }}
+          app-name: ${{env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ steps.save_publish_profile.outputs.publish_profile }}
           package: ${{ env.PATH_SOLUTION }}
         
