@@ -6,6 +6,13 @@ terraform {
     }
     
   }
+  backend "azurerm" {
+    resource_group_name = "Wolford-AppService-WestEu-Dev"
+    storage_account_name = "wolfordstoaccwesteudev"
+    container_name = "terraformstatefile"
+    key="wolford.trstate.dev"
+    
+  }
   
 }
 
