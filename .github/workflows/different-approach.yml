@@ -19,24 +19,24 @@ permissions:
       contents: read
 
 jobs:
-# build:
-#   runs-on: windows-latest
-#
-#   steps:
-#   - name: Checkout code
-#     uses: actions/checkout@v3
-#     with:
-#       ref: ${{ github.head_ref }}   # checkout the correct branch name
-#       fetch-depth: 0                # fetch the whole repo history
-#
-#   - name: Setup MSBuild.exe path
-#     uses: microsoft/setup-msbuild@v1.0.3
-#
-#   - name: Restore Nuget Package
-#     run: nuget restore ${{ env.PATH_SOLUTION }}
-#
-#   - name: Build the solution
-#     run: msbuild ${{ env.PATH_SOLUTION }} /p:Configuration=Release
+ build:
+   runs-on: windows-latest
+
+   steps:
+   - name: Checkout code
+     uses: actions/checkout@v3
+     with:
+       ref: ${{ github.head_ref }}   # checkout the correct branch name
+       fetch-depth: 0                # fetch the whole repo history
+
+   - name: Setup MSBuild.exe path
+     uses: microsoft/setup-msbuild@v1.0.3
+
+   - name: Restore Nuget Package
+     run: nuget restore ${{ env.PATH_SOLUTION }}
+
+   - name: Build the solution
+     run: msbuild ${{ env.PATH_SOLUTION }} /p:Configuration=Release
       
     # - name: Determine version number
     #   id: version
@@ -59,60 +59,45 @@ jobs:
 # 
     #     echo "::set-output name=version::$new_tag"
       
-#  - name: Archive build artifact
-#    uses: actions/upload-artifact@v2
-#    with:
-#      name: build-artifact
-#      # path: Code/WolfordV2/WolfordApis-${{ steps.version.outputs.version }}
-#      path: Code/WolfordV2/WolfordApis
+   - name: Archive build artifact
+     uses: actions/upload-artifact@v2
+     with:
+      name: build-artifact
+      # path: Code/WolfordV2/WolfordApis-${{ steps.version.outputs.version }}
+      path: Code/WolfordV2/WolfordApis
         
         
         
-   deploy:
-    #needs: build
-    runs-on: windows-latest
+ deploy:
+     needs: build
+     runs-on: windows-latest
   
-    steps:
-#    - name: Download build artifact
-#      uses: actions/download-artifact@v2
-#      with:
- #       name: build-artifact
+     steps:
+     - name: Download build artifact
+       uses: actions/download-artifact@v2
+       with:
+         name: build-artifact
      
-    - name: Connect to Azure
-      uses: azure/powershell@v1
-      with:
+     - name: Connect to Azure
+       uses: azure/powershell@v1
+       with:
         inlineScript: | 
          [SecureString]$secureSecret=ConvertTo-SecureString -String ${{secrets.AZ_AD_CLIENT_SECRET}} -AsPlainText -Force
          $Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ${{env.OBJECT_ID}}, $secureSecret
          Connect-AzAccount -ServicePrincipal -TenantId ${{env.TENANT_ID}} -Credential $Credential
         azPSVersion: "latest"
- #  - name: Connect to Azure
- #    uses: azure/login@v1
- #    with:
- #       creds: '{"clientId":"${{ secrets.AZ_AD_CLIENT_ID }}","clientSecret":"${{ secrets.AZ_AD_CLIENT_SECRET }}","subscriptionId":"${{ secrets.AZ_SUBSCRIPTION_ID }}","tenantId":"${{ secrets.AZ_ID_TENANT_ID }}"}'
-      
-  #   with:
-  #         client-id: ${{ env.ARM_CLIENT_ID }}
-  #         tenant-id: ${{ env.ARM_TENANT_ID }}
-  #         subscription-id: ${{ env.ARM_SUBSCRIPTION_ID }}
-  #         enable-AzPSSession: true
             
-    - name: Get publisher 
-      uses: azure/powershell@v1
-    #  run: |
-     #   $publishProfile = Get-AzWebAppPublishingProfile -ResourceGroupName ${{vars.RESOURCE_GROUP_NAME}} -Name ${{env.AZURE_WEBAPP_NAME}}
-      #  Write-Output "::set-output name=publish_profile::$publishProfile"
-        
-      
-      with:
+     - name: Get publisher 
+       uses: azure/powershell@v1
+       with:
         inlineScript: |
          $publishProfile = Get-AzWebAppPublishingProfile -ResourceGroupName ${{vars.RESOURCE_GROUP_NAME}} -Name ${{env.AZURE_WEBAPP_NAME}}
          Write-Output "::set-output name=publish_profile::$publishProfile"
         azPSVersion: "latest"
      
-    - name: Azure Deploy 
-      uses: azure/webapps-deploy@v2
-      with:
+     - name: Azure Deploy 
+       uses: azure/webapps-deploy@v2
+       with:
           app-name: ${{env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ steps.save_publish_profile.outputs.publish_profile }}
           package: ${{ env.PATH_SOLUTION }}
