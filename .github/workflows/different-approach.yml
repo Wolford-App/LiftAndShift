@@ -88,11 +88,17 @@ jobs:
   #         enable-AzPSSession: true
             
     - name: Get publisher 
-      id: save_publish_profile
-      run: |
-        $publishProfile = Get-AzWebAppPublishingProfile -ResourceGroupName ${{vars.RESOURCE_GROUP_NAME}} -Name ${{env.AZURE_WEBAPP_NAME}}
-        Write-Output "::set-output name=publish_profile::$publishProfile"
-     
+      uses: azure/powershell@v1
+    #  run: |
+     #   $publishProfile = Get-AzWebAppPublishingProfile -ResourceGroupName ${{vars.RESOURCE_GROUP_NAME}} -Name ${{env.AZURE_WEBAPP_NAME}}
+      #  Write-Output "::set-output name=publish_profile::$publishProfile"
+        
+      
+      with:
+        inlineScript: |
+         $publishProfile = Get-AzWebAppPublishingProfile -ResourceGroupName ${{vars.RESOURCE_GROUP_NAME}} -Name ${{env.AZURE_WEBAPP_NAME}}
+         Write-Output "::set-output name=publish_profile::$publishProfile"
+        azPSVersion: "latest"
      
     - name: Azure Deploy 
       uses: azure/webapps-deploy@v2
