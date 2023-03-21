@@ -95,12 +95,17 @@ jobs:
          Write-Output "::set-output name=publish_profile::$publishProfile"
         azPSVersion: "latest"
      
-     - name: Azure Deploy 
-       uses: azure/webapps-deploy@v2
+     - name: Azure Publish
+       uses: azure/powershell@v1
        with:
-          app-name: ${{env.AZURE_WEBAPP_NAME }}
-          publish-profile: ${{ steps.save_publish_profile.outputs.publish_profile }}
-          package: ${{ env.PATH_SOLUTION }}
+        inlineScript: |
+         Publish-AzWebApp -ResourceGroupName ${{vars.RESOURCE_GROUP_NAME}} -Name ${{env.AZURE_WEBAPP_NAME}} -ArchivePath Code/WolfordV2/WolfordApis/build-artifact
+  #  - name: Azure Deploy 
+  #    uses: azure/webapps-deploy@v2
+  #    with:
+  #       app-name: ${{env.AZURE_WEBAPP_NAME }}
+  #       publish-profile: ${{ steps.save_publish_profile.outputs.publish_profile }}
+  #       package: ${{ env.PATH_SOLUTION }}
         
         
       
