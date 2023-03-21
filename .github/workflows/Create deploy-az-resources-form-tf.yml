@@ -19,7 +19,7 @@ jobs:
     runs-on: windows-latest
     environment: ${{vars.CURRENT_ENV}}
     
-## Use the Bash shell regardless of whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+# Use the Bash shell regardless of whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
       run:
         shell: bash
