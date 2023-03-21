@@ -70,11 +70,6 @@ jobs:
       with:
         name: build-artifact
      
-    - name: Get publish Profiler
-      run: az webapp deployment list-publishing-profiles --resource-group $RESOURCE_GROUP_NAME --name $WEB_APP_NAME --query "[?contains(@.publishMethod, 'FTP')].{publishUrl:publishUrl, msdeploySite:msdeploySite, userName:userName, userPWD:userPWD}" --output tsv > publish_profile.xml
-      env:
-       RESOURCE_GROUP_NAME: your-resource-group-name
-       WEB_APP_NAME: your-web-app-name
      
     - name: Connect to Azure
       uses: azure/login@v1
