@@ -82,7 +82,8 @@ jobs:
       uses: azure/powershell@v1
       with:
         inlineScript: | 
-         $Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ${{env.OBJECT_ID}}, ${{secrets.AZ_AD_CLIENT_SECRET}}
+         [SecureString]$secureSecret=ConvertTo-SecureString -String ${{secrets.AZ_AD_CLIENT_SECRET}} -AsPlainText -Force
+         $Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ${{env.OBJECT_ID}}, $secureSecret
          Connect-AzAccount -ServicePrincipal -TenantId ${{env.TENANT_ID}} -Credential $Credential
         azPSVersion: "latest"
  #  - name: Connect to Azure
