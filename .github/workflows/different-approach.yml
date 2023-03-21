@@ -2,8 +2,9 @@ name: Deploy to Azure Web App
 
 on:
   push:
-    branches: [ "main" ]
-
+    branches: 
+      -develop
+    paths: ${{vars.WEB_APP_MAIN_PATH}}
 env:
   AZURE_WEBAPP_NAME: <your-web-app-name>
   AZURE_WEBAPP_PACKAGE_PATH: ${{ github.workspace }}/MyWebApp.zip
@@ -57,6 +58,8 @@ jobs:
         # path: Code/WolfordV2/WolfordApis-${{ steps.version.outputs.version }}
         path: Code/WolfordV2/WolfordApis
         
+        
+        
   deploy:
     needs: build
     runs-on: windows-latest
@@ -66,7 +69,37 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: build-artifact
+     
+    - name: Get publish Profiler
+      run: az webapp deployment list-publishing-profiles --resource-group $RESOURCE_GROUP_NAME --name $WEB_APP_NAME --query "[?contains(@.publishMethod, 'FTP')].{publishUrl:publishUrl, msdeploySite:msdeploySite, userName:userName, userPWD:userPWD}" --output tsv > publish_profile.xml
+      env:
+       RESOURCE_GROUP_NAME: your-resource-group-name
+       WEB_APP_NAME: your-web-app-name
+     
+    - name: Connect to Azure
+      uses: azure/login@v1
+      with:
+            client-id: ${{ secrets.AZ_AD_CLIENT_ID }}
+            tenant-id: ${{ secrets.AZ_ID_TENANT_ID }}
+            subscription-id: ${{ secrets.AZ_SUBSCRIPTION_ID }}
+            enable-AzPSSession: true
+            
+    - name: Get publisher 
+      id: save_publish_profile
+      run: |
+        $publishProfile = Get-AzWebAppPublishingProfile -ResourceGroupName <resource-group-name> -Name <web-app-name>
+        Write-Output "::set-output name=publish_profile::$publishProfile"
+     
+     
+    - name: Azure Deploy 
+      uses: azure/webapps-deploy@v2
+      with:
+          app-name: ${{ vars.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ steps.save_publish_profile.outputs.publish_profile }}
+          package: ${{ env.PATH_SOLUTION }}
         
-    - name: Set MyVariable value
-      run: echo "Hello, world!" > MyVariable
+        
+      
+
+ 
 
