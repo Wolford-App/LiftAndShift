@@ -10,6 +10,10 @@ env:
   AZURE_WEBAPP_PACKAGE_PATH: ${{ github.workspace }}/MyWebApp.zip
   PATH_SOLUTION: Code/WolfordV2/WolfordApis.sln
 
+permissions:
+      id-token: write
+      contents: read
+
 jobs:
   build:
     runs-on: windows-latest
