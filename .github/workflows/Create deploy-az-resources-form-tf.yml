@@ -112,4 +112,4 @@ jobs:
 
       # Terraform Apply
       - name: Terraform Apply
-        run: terraform apply -var="AdminUser=${{secrets.DB_ADMIN_USERNAME}}" -var="AdminPw=${{secrets.DB_ADMIN_PASSWORD}}" -var="SkuName=${{vars.SKUNAME}}" -var="ResGrLocation=${{vars.RESOURCE_GROUP_LOCATION}}" -var="ResGrName=${{vars.RESOURCE_GROUP_NAME}}" -auto-approve tfplan
+        run: terraform apply -var="AdminUser=${{secrets.DB_ADMIN_USERNAME}}" -var="AdminPw=${{secrets.DB_ADMIN_PASSWORD}}" -var="SkuName=${{vars.SKUNAME}}" -var="ResGrLocation=${{vars.RESOURCE_GROUP_LOCATION}}" -var="ResGrName=${{vars.RESOURCE_GROUP_NAME}}" 
