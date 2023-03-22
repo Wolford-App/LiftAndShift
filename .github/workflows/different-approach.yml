@@ -9,8 +9,7 @@ env:
   AZURE_WEBAPP_NAME: ${{ vars.AZURE_WEBAPP_NAME }}
   AZURE_WEBAPP_PACKAGE_PATH: ${{ github.workspace }}/WolfordApis.zip
   PATH_SOLUTION: Code/WolfordV2/WolfordApis.sln
-  PATH_PACKAGE: Code/WolfordV2/WolfordApis/bin/Release/PublishOutput
-  SOLUTION_NAME: WolfordApis.sln
+  PATH_PACKAGE: Code/WolfordV2/WolfordApis
 
   
 
@@ -37,9 +36,7 @@ jobs:
 
    - name: Build the solution
      run: msbuild ${{ env.PATH_SOLUTION }} /p:Configuration=Release
-    
-  # - name: Create package
-   #  run: msbuild /t:Package /p:Configuration=Release /p:PackageLocation=${{ env.AZURE_WEBAPP_PACKAGE_PATH }} ${{ env.SOLUTION_NAME }}  
+
        
       
     # - name: Determine version number
@@ -100,32 +97,7 @@ jobs:
          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
 
          
-         
-         
-#    - name: Connect to Azure
-#      uses: azure/powershell@v1
-#      with:
-#       inlineScript: | 
-#        [SecureString]$secureSecret=ConvertTo-SecureString -String ${{ secrets.AZ_AD_CLIENT_SECRET }} -AsPlainText -Force
-#        $Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ${{secrets.AZ_AD_CLIENT_ID}}, $secureSecret
-#        Connect-AzAccount -ServicePrincipal -TenantId ${{ secrets.AZ_ID_TENANT_ID }} -Credential $Credential
-#       azPSVersion: "latest"
-#           
-#    - name: Get publisher 
-#      uses: azure/powershell@v1
-#      with:
-#       inlineScript: |
-#        $publishProfile = Get-AzWebAppPublishingProfile -ResourceGroupName ${{vars.RESOURCE_GROUP_NAME}} -Name ${{env.AZURE_WEBAPP_NAME}}
-#        Write-Output "::set-output name=publish_profile::$publishProfile"
-#       azPSVersion: "latest"
-#    
-#    - name: Azure Publish
-#      uses: azure/powershell@v1
-#      with:
-#       inlineScript: |
-#        Publish-AzWebApp -ResourceGroupName ${{vars.RESOURCE_GROUP_NAME}} -Name ${{env.AZURE_WEBAPP_NAME}} -ArchivePath ${{env.AZURE_WEBAPP_PACKAGE_PATH}}
-#       azPSVersion: "latest"
-
+        
         
         
       
