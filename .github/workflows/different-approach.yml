@@ -38,8 +38,8 @@ jobs:
    - name: Build the solution
      run: msbuild ${{ env.PATH_SOLUTION }} /p:Configuration=Release
     
-   - name: Create package
-     run: msbuild /t:Package /p:Configuration=Release /p:PackageLocation=${{ env.AZURE_WEBAPP_PACKAGE_PATH }} ${{ env.SOLUTION_NAME }}  
+  # - name: Create package
+   #  run: msbuild /t:Package /p:Configuration=Release /p:PackageLocation=${{ env.AZURE_WEBAPP_PACKAGE_PATH }} ${{ env.SOLUTION_NAME }}  
        
       
     # - name: Determine version number
