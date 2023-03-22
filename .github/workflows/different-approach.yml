@@ -37,7 +37,8 @@ jobs:
    - name: Build the solution
      run: msbuild ${{ env.PATH_SOLUTION }} /p:Configuration=Release
 
-       
+   - name: Package solution
+     run: Compress-Archive -Path .\bin -DestinationPath WolfordApis.zip  
       
     # - name: Determine version number
     #   id: version
@@ -64,7 +65,7 @@ jobs:
      uses: actions/upload-artifact@v2
      with:
       name: build-artifact
-      path: ${{env.PATH_PACKAGE}}
+      path: .\WolfordApis.zip  
         
         
         
@@ -77,6 +78,7 @@ jobs:
        uses: actions/download-artifact@v2
        with:
          name: build-artifact
+         path: .
      
      - name: test
        run: | 
@@ -99,7 +101,7 @@ jobs:
        with:
          app-name: ${{env.AZURE_WEBAPP_NAME }}
          publish-profile: ${{env.profile_xml }}
-         package:  ${{env.PATH_PACKAGE}}/build-artifact
+         package:  .\WolfordApis.zip  
 
          
         
