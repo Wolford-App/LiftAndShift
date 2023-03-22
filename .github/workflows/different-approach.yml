@@ -34,9 +34,14 @@ jobs:
    - name: Restore Nuget Package
      run: nuget restore ${{ env.PATH_SOLUTION }}
 
-   - name: Build the solution
-     run: msbuild Code/WolfordV2/WolfordApis /p:Configuration=Release
-     #${{ env.PATH_SOLUTION }} /p:Configuration=Release
+  # - name: Build the solution
+   #  run: msbuild Code/WolfordV2/WolfordApis /p:Configuration=Release
+    # #${{ env.PATH_SOLUTION }} /p:Configuration=Release
+    
+      
+   - name: Build
+     run: dotnet build -c Release --output ./MyWebApp --runtime win-x64
+     working-directory: ./Code/WolfordV2/WolfordApis
        
       
     # - name: Determine version number
