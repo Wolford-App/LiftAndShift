@@ -44,7 +44,7 @@ jobs:
    #  run: dotnet build --no-restore
     
    - name: Publish
-     run: dotnet publish --no-build -c Releas -o env.PATH_PACKAGE
+     run: dotnet publish --no-build -c Releas -o env.PATH_SOLUTION
      
 
   # - name: Build the solution
