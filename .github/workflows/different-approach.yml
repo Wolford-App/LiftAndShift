@@ -38,7 +38,7 @@ jobs:
      run: msbuild ${{ env.PATH_SOLUTION }} /p:Configuration=Release
 
    - name: Package solution
-     run: Compress-Archive -Path ${{env.PATH_PACKAGE}} -DestinationPath ${{env.AZURE_WEBAPP_PACKAGE_PATH}} 
+     run: Compress-Archive -Path ${{env.PATH_PACKAGE}}/* -DestinationPath ${{env.AZURE_WEBAPP_PACKAGE_PATH}} 
       
     # - name: Determine version number
     #   id: version
