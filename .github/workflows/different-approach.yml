@@ -9,9 +9,7 @@ env:
   AZURE_WEBAPP_NAME: ${{ vars.AZURE_WEBAPP_NAME }}
   AZURE_WEBAPP_PACKAGE_PATH: ${{ github.workspace }}/MyWebApp.zip
   PATH_SOLUTION: Code/WolfordV2/WolfordApis.sln
-  TENANT_ID: ${{secrets.AZ_ID_TENANT_ID}}
-  OBJECT_ID: ${{secrets.AZ_AD_CLIENT_ID}}
-  AD_SECRET: ${{secrets.AZ_AD_CLIENT_SECRET}}
+
   
 
 permissions:
@@ -62,7 +60,7 @@ jobs:
    - name: Archive build artifact
      uses: actions/upload-artifact@v2
      with:
-      name: build-artifact.zip
+      name: build-artifact
       # path: Code/WolfordV2/WolfordApis-${{ steps.version.outputs.version }}
       path: Code/WolfordV2/WolfordApis
         
@@ -76,31 +74,51 @@ jobs:
      - name: Download build artifact
        uses: actions/download-artifact@v2
        with:
-         name: build-artifact.zip
+         name: build-artifact
      
      - name: Connect to Azure
-       uses: azure/powershell@v1
+       uses: Azure/login@v1
        with:
-        inlineScript: | 
-         [SecureString]$secureSecret=ConvertTo-SecureString -String ${{secrets.AZ_AD_CLIENT_SECRET}} -AsPlainText -Force
-         $Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ${{env.OBJECT_ID}}, $secureSecret
-         Connect-AzAccount -ServicePrincipal -TenantId ${{env.TENANT_ID}} -Credential $Credential
-        azPSVersion: "latest"
-            
-     - name: Get publisher 
-       uses: azure/powershell@v1
-       with:
-        inlineScript: |
-         $publishProfile = Get-AzWebAppPublishingProfile -ResourceGroupName ${{vars.RESOURCE_GROUP_NAME}} -Name ${{env.AZURE_WEBAPP_NAME}}
-         Write-Output "::set-output name=publish_profile::$publishProfile"
-        azPSVersion: "latest"
+        creds: '{"clientId":"${{secrets.AZ_AD_CLIENT_ID}}","clientSecret":"${{ secrets.AZ_AD_CLIENT_SECRET }}","subscriptionId":"${{ secrets.AZ_SUBSCRIPTION_ID }}","tenantId":"${{ secrets.AZ_ID_TENANT_ID }}"}'
      
-     - name: Azure Publish
-       uses: azure/powershell@v1
+     - name: Get publish profiler
+       run: |
+            $profile_xml=$(az webapp deployment list-publishing-profiles ${{env.AZURE_WEBAPP_NAME}} --resource-group ${{vars.RESOURCE_GROUP_LOCATION}} --xml)
+            echo "::set-env name=profile_xml::$profile_xml"
+            
+            
+     - name: Azure Deploy 
+       uses: azure/webapps-deploy@v2
        with:
-        inlineScript: |
-         Publish-AzWebApp -ResourceGroupName ${{vars.RESOURCE_GROUP_NAME}} -Name ${{env.AZURE_WEBAPP_NAME}} -ArchivePath Code/WolfordV2/WolfordApis/build-artifact.zip
-        azPSVersion: "latest"
+         app-name: ${{env.AZURE_WEBAPP_NAME }}
+         publish-profile: ${{env.profile_xml }}
+         package: ${{ env.PATH_SOLUTION }}
+         
+         
+         
+#    - name: Connect to Azure
+#      uses: azure/powershell@v1
+#      with:
+#       inlineScript: | 
+#        [SecureString]$secureSecret=ConvertTo-SecureString -String ${{secrets.AZ_AD_CLIENT_SECRET}} -AsPlainText -Force
+#        $Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ${{env.OBJECT_ID}}, $secureSecret
+#        Connect-AzAccount -ServicePrincipal -TenantId ${{env.TENANT_ID}} -Credential $Credential
+#       azPSVersion: "latest"
+#           
+#    - name: Get publisher 
+#      uses: azure/powershell@v1
+#      with:
+#       inlineScript: |
+#        $publishProfile = Get-AzWebAppPublishingProfile -ResourceGroupName ${{vars.RESOURCE_GROUP_NAME}} -Name ${{env.AZURE_WEBAPP_NAME}}
+#        Write-Output "::set-output name=publish_profile::$publishProfile"
+#       azPSVersion: "latest"
+#    
+#    - name: Azure Publish
+#      uses: azure/powershell@v1
+#      with:
+#       inlineScript: |
+#        Publish-AzWebApp -ResourceGroupName ${{vars.RESOURCE_GROUP_NAME}} -Name ${{env.AZURE_WEBAPP_NAME}} -ArchivePath Code/WolfordV2/WolfordApis/build-artifact.zip
+#       azPSVersion: "latest"
   #  - name: Azure Deploy 
   #    uses: azure/webapps-deploy@v2
   #    with:
