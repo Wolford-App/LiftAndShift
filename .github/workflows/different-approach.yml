@@ -9,7 +9,7 @@ env:
   AZURE_WEBAPP_NAME: ${{ vars.AZURE_WEBAPP_NAME }}
   AZURE_WEBAPP_PACKAGE_PATH: ${{ github.workspace }}/MyWebApp.zip
   PATH_SOLUTION: Code/WolfordV2/WolfordApis.sln
-  PATH_PACKAGE: ./Code/WolfordV2/bin/Release/net48/publish/
+  PATH_PACKAGE: ./Code/WolfordV2/bin
 
   
 
