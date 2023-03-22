@@ -9,6 +9,7 @@ env:
   AZURE_WEBAPP_NAME: ${{ vars.AZURE_WEBAPP_NAME }}
   AZURE_WEBAPP_PACKAGE_PATH: ${{ github.workspace }}/MyWebApp.zip
   PATH_SOLUTION: Code/WolfordV2/WolfordApis.sln
+  PATH_PACKAGE: Code/WolfordV2
 
   
 
@@ -27,14 +28,28 @@ jobs:
        ref: ${{ github.head_ref }}   # checkout the correct branch name
        fetch-depth: 0                # fetch the whole repo history
 
-   - name: Setup MSBuild.exe path
-     uses: microsoft/setup-msbuild@v1.0.3
+   - name: Setup .NET CORE SDK 4.8
+     uses: actions/setup-dotnet@v1
+     with:
+        dotnet-version: 4.8
+       
+   - name: Restore
+     run: dotnet restore
+     
+   - name: Build
+     run: dotnet build --no-restore
+    
+   - name: Publish
+     run: dotnet publish --no-build -c Releas -o env.PATH_PACKAGE
+     
+  # - name: Setup MSBuild.exe path
+    # uses: microsoft/setup-msbuild@v1.0.3
 
-   - name: Restore Nuget Package
-     run: nuget restore ${{ env.PATH_SOLUTION }}
+   #- name: Restore Nuget Package
+    # run: nuget restore ${{ env.PATH_SOLUTION }}
 
-   - name: Build the solution
-     run: msbuild ${{ env.PATH_SOLUTION }} /p:Configuration=Release
+  # - name: Build the solution
+     #run: msbuild ${{ env.PATH_SOLUTION }} /p:Configuration=Release
       
     # - name: Determine version number
     #   id: version
@@ -92,7 +107,7 @@ jobs:
        with:
          app-name: ${{env.AZURE_WEBAPP_NAME }}
          publish-profile: ${{env.profile_xml }}
-         package: ./Code/WolfordV2/WolfordApis
+         package: env.PATH_PACKAGE
          #${{ env.PATH_SOLUTION }}
          
          
