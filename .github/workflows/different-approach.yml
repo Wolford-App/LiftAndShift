@@ -62,7 +62,7 @@ jobs:
    - name: Archive build artifact
      uses: actions/upload-artifact@v2
      with:
-      name: build-artifact
+      name: build-artifact.zip
       # path: Code/WolfordV2/WolfordApis-${{ steps.version.outputs.version }}
       path: Code/WolfordV2/WolfordApis
         
@@ -99,7 +99,7 @@ jobs:
        uses: azure/powershell@v1
        with:
         inlineScript: |
-         Publish-AzWebApp -ResourceGroupName ${{vars.RESOURCE_GROUP_NAME}} -Name ${{env.AZURE_WEBAPP_NAME}} -ArchivePath Code/WolfordV2/WolfordApis/build-artifact
+         Publish-AzWebApp -ResourceGroupName ${{vars.RESOURCE_GROUP_NAME}} -Name ${{env.AZURE_WEBAPP_NAME}} -ArchivePath Code/WolfordV2/WolfordApis/build-artifact.zip
         azPSVersion: "latest"
   #  - name: Azure Deploy 
   #    uses: azure/webapps-deploy@v2
