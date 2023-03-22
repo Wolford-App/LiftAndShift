@@ -83,7 +83,7 @@ jobs:
      
      - name: Get publish profiler
        run: |
-            $profile_xml=$(az webapp deployment list-publishing-profiles ${{env.AZURE_WEBAPP_NAME}} --resource-group ${{vars.RESOURCE_GROUP_LOCATION}} --xml)
+            $profile_xml=$(az webapp deployment list-publishing-profiles --name ${{env.AZURE_WEBAPP_NAME}} --resource-group ${{vars.RESOURCE_GROUP_NAME}} --xml)
              echo "profile_xml="$profile_xml >> $GITHUB_ENV
             
             
@@ -100,9 +100,9 @@ jobs:
 #      uses: azure/powershell@v1
 #      with:
 #       inlineScript: | 
-#        [SecureString]$secureSecret=ConvertTo-SecureString -String ${{secrets.AZ_AD_CLIENT_SECRET}} -AsPlainText -Force
-#        $Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ${{env.OBJECT_ID}}, $secureSecret
-#        Connect-AzAccount -ServicePrincipal -TenantId ${{env.TENANT_ID}} -Credential $Credential
+#        [SecureString]$secureSecret=ConvertTo-SecureString -String ${{ secrets.AZ_AD_CLIENT_SECRET }} -AsPlainText -Force
+#        $Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ${{secrets.AZ_AD_CLIENT_ID}}, $secureSecret
+#        Connect-AzAccount -ServicePrincipal -TenantId ${{ secrets.AZ_ID_TENANT_ID }} -Credential $Credential
 #       azPSVersion: "latest"
 #           
 #    - name: Get publisher 
@@ -117,14 +117,9 @@ jobs:
 #      uses: azure/powershell@v1
 #      with:
 #       inlineScript: |
-#        Publish-AzWebApp -ResourceGroupName ${{vars.RESOURCE_GROUP_NAME}} -Name ${{env.AZURE_WEBAPP_NAME}} -ArchivePath Code/WolfordV2/WolfordApis/build-artifact.zip
+#        Publish-AzWebApp -ResourceGroupName ${{vars.RESOURCE_GROUP_NAME}} -Name ${{env.AZURE_WEBAPP_NAME}} -ArchivePath ${{env.AZURE_WEBAPP_PACKAGE_PATH}}
 #       azPSVersion: "latest"
-  #  - name: Azure Deploy 
-  #    uses: azure/webapps-deploy@v2
-  #    with:
-  #       app-name: ${{env.AZURE_WEBAPP_NAME }}
-  #       publish-profile: ${{ steps.save_publish_profile.outputs.publish_profile }}
-  #       package: ${{ env.PATH_SOLUTION }}
+
         
         
       
