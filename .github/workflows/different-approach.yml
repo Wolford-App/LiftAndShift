@@ -9,7 +9,7 @@ env:
   AZURE_WEBAPP_NAME: ${{ vars.AZURE_WEBAPP_NAME }}
   AZURE_WEBAPP_PACKAGE_PATH: ${{ github.workspace }}/MyWebApp.zip
   PATH_SOLUTION: Code/WolfordV2/WolfordApis.sln
-  PATH_PACKAGE: Code/WolfordV2
+  PATH_PACKAGE: ./Code/WolfordV2/bin/Release/net48/publish/
 
   
 
@@ -35,20 +35,8 @@ jobs:
      run: nuget restore ${{ env.PATH_SOLUTION }}
 
    - name: Build the solution
-     run: msbuild ${{ env.PATH_SOLUTION }}
+     run: msbuild ${{ env.PATH_SOLUTION }} /p:Configuration=Release
        
-   #- name: Restore
-  #   run: dotnet restore
-     
-  # - name: Build
-   #  run: dotnet build --no-restore
-    
-   - name: Publish
-     run: dotnet publish --no-build -c Releas -o ${{ env.PATH_SOLUTION}}
-     
-
-  # - name: Build the solution
-     #run: msbuild ${{ env.PATH_SOLUTION }} /p:Configuration=Release
       
     # - name: Determine version number
     #   id: version
