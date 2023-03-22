@@ -94,7 +94,7 @@ jobs:
        with:
          app-name: ${{env.AZURE_WEBAPP_NAME }}
          publish-profile: ${{env.profile_xml }}
-         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+         package: build-artifact
 
          
         
