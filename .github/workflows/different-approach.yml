@@ -84,7 +84,7 @@ jobs:
      - name: Get publish profiler
        run: |
             $profile_xml=$(az webapp deployment list-publishing-profiles ${{env.AZURE_WEBAPP_NAME}} --resource-group ${{vars.RESOURCE_GROUP_LOCATION}} --xml)
-             echo " profile_xml=${{profile_xml}}" >> $GITHUB_ENV
+             echo "profile_xml="$profile_xml >> $GITHUB_ENV
             
             
      - name: Azure Deploy 
