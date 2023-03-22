@@ -100,6 +100,7 @@ jobs:
        with:
         inlineScript: |
          Publish-AzWebApp -ResourceGroupName ${{vars.RESOURCE_GROUP_NAME}} -Name ${{env.AZURE_WEBAPP_NAME}} -ArchivePath Code/WolfordV2/WolfordApis/build-artifact
+        azPSVersion: "latest"
   #  - name: Azure Deploy 
   #    uses: azure/webapps-deploy@v2
   #    with:
