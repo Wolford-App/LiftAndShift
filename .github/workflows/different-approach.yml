@@ -62,7 +62,7 @@ jobs:
      with:
       name: build-artifact
       # path: Code/WolfordV2/WolfordApis-${{ steps.version.outputs.version }}
-      path: Code/WolfordV2/WolfordApis
+      path: ./Code/WolfordV2/WolfordApis
         
         
         
@@ -92,7 +92,8 @@ jobs:
        with:
          app-name: ${{env.AZURE_WEBAPP_NAME }}
          publish-profile: ${{env.profile_xml }}
-         package: ${{ env.PATH_SOLUTION }}
+         package: ./Code/WolfordV2/WolfordApis
+         #${{ env.PATH_SOLUTION }}
          
          
          
