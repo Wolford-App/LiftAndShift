@@ -35,7 +35,8 @@ jobs:
      run: nuget restore ${{ env.PATH_SOLUTION }}
 
    - name: Build the solution
-     run: msbuild ${{ env.PATH_SOLUTION }} /p:Configuration=Release
+     run: msbuild Code/WolfordV2/WolfordApis /p:Configuration=Release
+     #${{ env.PATH_SOLUTION }} /p:Configuration=Release
        
       
     # - name: Determine version number
