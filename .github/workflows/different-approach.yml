@@ -7,9 +7,10 @@ on: workflow_dispatch
     #paths: ${{vars.WEBAPI_PATH}}
 env:
   AZURE_WEBAPP_NAME: ${{ vars.AZURE_WEBAPP_NAME }}
-  AZURE_WEBAPP_PACKAGE_PATH: ${{ github.workspace }}/MyWebApp.zip
+  AZURE_WEBAPP_PACKAGE_PATH: ${{ github.workspace }}/WolfordApis.zip
   PATH_SOLUTION: Code/WolfordV2/WolfordApis.sln
-  PATH_PACKAGE: ./Code/WolfordV2/WolfordApis/bin
+  PATH_PACKAGE: Code/WolfordV2/WolfordApis/bin/Release/PublishOutput
+  SOLUTION_NAME: WolfordApis.sln
 
   
 
@@ -34,14 +35,11 @@ jobs:
    - name: Restore Nuget Package
      run: nuget restore ${{ env.PATH_SOLUTION }}
 
-  # - name: Build the solution
-   #  run: msbuild Code/WolfordV2/WolfordApis /p:Configuration=Release
-    # #${{ env.PATH_SOLUTION }} /p:Configuration=Release
+   - name: Build the solution
+     run: msbuild ${{ env.PATH_SOLUTION }} /p:Configuration=Release
     
-      
-   - name: Build
-     run: dotnet build -c Release --output ./MyWebApp --runtime win-x64
-     working-directory: ./Code/WolfordV2/WolfordApis
+   - name: Create package
+     run: msbuild /t:Package /p:Configuration=Release /p:PackageLocation=${{ env.AZURE_WEBAPP_PACKAGE_PATH }} ${{ env.SOLUTION_NAME }}  
        
       
     # - name: Determine version number
@@ -69,8 +67,7 @@ jobs:
      uses: actions/upload-artifact@v2
      with:
       name: build-artifact
-      # path: Code/WolfordV2/WolfordApis-${{ steps.version.outputs.version }}
-      path: ./Code/WolfordV2/WolfordApis
+      path: ${{env.PATH_PACKAGE}}
         
         
         
@@ -100,8 +97,8 @@ jobs:
        with:
          app-name: ${{env.AZURE_WEBAPP_NAME }}
          publish-profile: ${{env.profile_xml }}
-         package: ./Code/WolfordV2/WolfordApis
-         #${{ env.PATH_PACKAGE }}
+         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+
          
          
          
