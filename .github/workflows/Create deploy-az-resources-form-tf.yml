@@ -4,7 +4,7 @@ on:
     branches:
     - develop
     paths: 
-      - ${{vars.TERRAFORM_MAIN_FOLDER}}/
+      - ${{vars.TERRAFORM_MAIN_PATH}}/
 
 permissions:
   contents: read
