@@ -30,6 +30,7 @@ data "azurerm_client_config" "current" {
 }
 
 
+
 variable "AdminUser"{
   type=string
   default="sadev"
