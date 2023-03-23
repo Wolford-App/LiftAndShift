@@ -3,7 +3,7 @@ on:
   push:
     branches:
     - develop
-    paths: ${{vars.TERRAFORM_MAIN_FOLDER}}
+    paths: ${{vars.TERRAFORM_MAIN_PATH}}
 
 permissions:
   contents: read
