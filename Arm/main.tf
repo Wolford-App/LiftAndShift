@@ -61,7 +61,7 @@ resource "azurerm_resource_group" "Wol_Rs_Group" {
   location = "West Europe"
 }*/
 
-resource "azurerm_service_plan" "Wol_AppSerPlan" {
+resource "azurerm_service_plan" "Wol_AppSerPlann" {
    name="Wolford-AppServicePlan-WestEu-Dev"
    resource_group_name = var.ResGrName
    location = var.ResGrLocation
