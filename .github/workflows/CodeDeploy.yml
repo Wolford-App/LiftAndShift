@@ -1,10 +1,12 @@
 name: Deploy to Azure Web App
-#aa
-on: workflow_dispatch
- # push:
-  #  branches: 
-    #  -develop
-    #paths: ${{vars.WEBAPI_PATH}}
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - Code/**
+      
 env:
   AZURE_WEBAPP_NAME: ${{ vars.AZURE_WEBAPP_NAME }}
   AZURE_WEBAPP_PACKAGE_PATH: ${{ github.workspace }}/WolfordApis.zip
