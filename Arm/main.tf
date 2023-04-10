@@ -3,33 +3,29 @@ terraform {
     azurerm = {
       source  = "hashicorp/azurerm"
       version = "=3.47.0"
-    }
-    
+    } 
   }
+
   backend "azurerm" {
     resource_group_name = "Wolford-AppService-WestEu-Dev"
     storage_account_name = "wolfordstoaccwesteudev"
     container_name = "terraformstatefile"
-    key="wolford.trstate.dev"
-    
+    key="wolford.trstate.dev"  
   }
-  
 }
 
 provider "azurerm" {
   skip_provider_registration = true
   features {
-        key_vault {
-            purge_soft_delete_on_destroy    = true
-            recover_soft_deleted_key_vaults = true
-          }
+    key_vault {
+      purge_soft_delete_on_destroy    = true
+      recover_soft_deleted_key_vaults = true
+    }
   }
 }
 
 data "azurerm_client_config" "current" {
 }
-
-
 
 variable "AdminUser"{
   type=string
@@ -73,15 +69,12 @@ resource "azurerm_windows_web_app" "WolApis_WebApp" {
       type="UserAssigned"
       identity_ids = [ azurerm_user_assigned_identity.Wol_ManagedIdentity.id ]
     }
-
   site_config {
     always_on =false
       application_stack{
     current_stack="dotnet"
     dotnet_version="v4.0"
     }
-
-
   }
     https_only=true
       connection_string {
@@ -90,8 +83,6 @@ resource "azurerm_windows_web_app" "WolApis_WebApp" {
     value = "Server=tcp:${azurerm_mssql_server.Wol_SqlServer.name}.database.windows.net,1433;Initial Catalog=${azurerm_mssql_database.Wol_Db.name};Persist Security Info=False;User ID=${var.AdminUser};Password=${var.AdminPw};MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
   }
 }
-
-
 
 resource "azurerm_mssql_server" "Wol_SqlServer" {
     name="wolford-sql-server-westeu-dev"
@@ -105,7 +96,7 @@ resource "azurerm_mssql_server" "Wol_SqlServer" {
 }
 
 resource "azurerm_mssql_database" "Wol_Db" {
-    name="wolfore-employee-sql-db-westeu-dev"
+    name="wolford-employee-sql-db"
     server_id = azurerm_mssql_server.Wol_SqlServer.id
 }
 
@@ -114,8 +105,6 @@ resource "azurerm_user_assigned_identity" "Wol_ManagedIdentity" {
     location = var.ResGrLocation
     resource_group_name = var.ResGrName
 }
-
-
 
 resource "azurerm_mssql_firewall_rule" "ForAppAccess" {
   name                = "ForAppAccess"

@@ -1,0 +1,49 @@
+name: 'Terraform'
+on:
+  push:
+    branches:
+    - develop
+    paths:
+      - Arm/**
+
+permissions:
+  contents: read
+  
+jobs:
+  terraform:
+    name: 'Terraform'
+    env:
+      ARM_CLIENT_ID: ${{secrets.AZ_AD_CLIENT_ID}}
+      ARM_CLIENT_SECRET: ${{secrets.AZ_AD_CLIENT_SECRET}}
+      ARM_SUBSCRIPTION_ID: ${{secrets.AZ_SUBSCRIPTION_ID}}
+      ARM_TENANT_ID: ${{secrets.AZ_ID_TENANT_ID}}
+      ARM_SKIP_PROVIDER_REGISTRATION: true
+    runs-on: windows-latest
+    environment: ${{vars.CURRENT_ENV}}
+    
+# Use the Bash shell regardless of whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v3
+# Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
+      # Install the latest version of the Terraform CLI
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_wrapper: false
+# Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    - name: Terraform Init
+      working-directory: ${{vars.TERRAFORM_MAIN_PATH}}
+      run: terraform init
+# Generates an execution plan for Terraform
+    - name: Terraform Plan
+      working-directory: ${{vars.TERRAFORM_MAIN_PATH}}
+      run: terraform plan -var="AdminUser=${{secrets.DB_ADMIN_USERNAME}}" -var="AdminPw=${{secrets.DB_ADMIN_PASSWORD}}" -var="SkuName=${{vars.SKUNAME}}" -var="ResGrLocation=${{vars.RESOURCE_GROUP_LOCATION}}" -var="ResGrName=${{vars.RESOURCE_GROUP_NAME}}"
+# Apply Terraform changes
+    - name: Terraform Apply
+      working-directory: ${{vars.TERRAFORM_MAIN_PATH}}
+      run: terraform apply -auto-approve -input=false -var="AdminUser=${{secrets.DB_ADMIN_USERNAME}}" -var="AdminPw=${{secrets.DB_ADMIN_PASSWORD}}" -var="SkuName=${{vars.SKUNAME}}" -var="ResGrLocation=${{vars.RESOURCE_GROUP_LOCATION}}" -var="ResGrName=${{vars.RESOURCE_GROUP_NAME}}"
