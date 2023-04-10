@@ -2,9 +2,10 @@ name: 'Wolford-LiftAndShift-ARM'
 on:
   push:
     branches:
-    - develop
+      - master
     paths:
-      - Arm/**
+      - Code/**
+      
 
 permissions:
   contents: read
