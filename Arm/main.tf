@@ -69,15 +69,12 @@ resource "azurerm_windows_web_app" "WolApis_WebApp" {
       type="UserAssigned"
       identity_ids = [ azurerm_user_assigned_identity.Wol_ManagedIdentity.id ]
     }
-
   site_config {
     always_on =false
       application_stack{
     current_stack="dotnet"
     dotnet_version="v4.0"
     }
-
-
   }
     https_only=true
       connection_string {
