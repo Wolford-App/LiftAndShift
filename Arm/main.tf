@@ -121,5 +121,5 @@ resource "azurerm_mssql_firewall_rule" "ForAppAccess" {
   name                = "ForAppAccess"
   server_id         = azurerm_mssql_server.Wol_SqlServer.id
   start_ip_address    = "0.0.0.0"
-  end_ip_address      = "255.255.255.255"
+  end_ip_address      = "0.0.0.0"
 }
