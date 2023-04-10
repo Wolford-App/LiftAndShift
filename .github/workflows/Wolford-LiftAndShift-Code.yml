@@ -82,11 +82,6 @@ jobs:
          name: build-artifact
          path: .
      
-     - name: test
-       run: | 
-         pwd
-         ls
-     
      - name: Connect to Azure
        uses: Azure/login@v1
        with:
