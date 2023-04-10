@@ -1,0 +1,115 @@
+name: Deploy to Azure Web App
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - Code/**
+      
+env:
+  AZURE_WEBAPP_NAME: ${{ vars.AZURE_WEBAPP_NAME }}
+  AZURE_WEBAPP_PACKAGE_PATH: ${{ github.workspace }}/WolfordApis.zip
+  PATH_SOLUTION: Code/WolfordV2/WolfordApis.sln
+  PATH_PACKAGE: Code/WolfordV2/WolfordApis
+
+  
+
+permissions:
+      id-token: write
+      contents: read
+
+jobs:
+ build:
+   runs-on: windows-latest
+
+   steps:
+   - name: Checkout code
+     uses: actions/checkout@v3
+     with:
+       ref: ${{ github.head_ref }}   # checkout the correct branch name
+       fetch-depth: 0                # fetch the whole repo history
+
+   - name: Setup MSBuild.exe path
+     uses: microsoft/setup-msbuild@v1.0.3
+     
+   - name: Restore Nuget Package
+     run: nuget restore ${{ env.PATH_SOLUTION }}
+
+   - name: Build the solution
+     run: msbuild ${{ env.PATH_SOLUTION }} /p:Configuration=Release
+
+   - name: Package solution
+     run: Compress-Archive -Path ${{env.PATH_PACKAGE}}/* -DestinationPath ${{env.AZURE_WEBAPP_PACKAGE_PATH}} 
+      
+    # - name: Determine version number
+    #   id: version
+    #   run: |
+    #     # Determine the version increment based on the branch being committed to
+    #     if [[ ${{ github.ref }} == refs/heads/main ]]; then
+    #       increment="major"
+    #     elif [[ ${{ github.ref }} == refs/heads/release/* ]]; then
+    #       increment="minor"
+    #     else
+    #       increment="patch"
+    #     fi
+# 
+    #     # Get the current version number from the latest Git tag
+    #     last_tag=$(git describe --abbrev=0 --tags)
+    #     version=$(echo $last_tag | awk -F'[v.]' '{printf "%d.%d.%d", $2, $3, $4}')
+# 
+    #     # Increment the appropriate version number and generate the new tag
+    #     new_tag=$(semver $increment $version)
+# 
+    #     echo "::set-output name=version::$new_tag"
+      
+   - name: Archive build artifact
+     uses: actions/upload-artifact@v2
+     with:
+      name: build-artifact
+      path: ${{env.AZURE_WEBAPP_PACKAGE_PATH}} 
+        
+        
+        
+ deploy:
+     needs: build
+     runs-on: windows-latest
+  
+     steps:
+     - name: Download build artifact
+       uses: actions/download-artifact@v2
+       with:
+         name: build-artifact
+         path: .
+     
+     - name: test
+       run: | 
+         pwd
+         ls
+     
+     - name: Connect to Azure
+       uses: Azure/login@v1
+       with:
+        creds: '{"clientId":"${{secrets.AZ_AD_CLIENT_ID}}","clientSecret":"${{ secrets.AZ_AD_CLIENT_SECRET }}","subscriptionId":"${{ secrets.AZ_SUBSCRIPTION_ID }}","tenantId":"${{ secrets.AZ_ID_TENANT_ID }}"}'
+     
+     - name: Get publish profiler
+       run: |
+            $profile_xml=$(az webapp deployment list-publishing-profiles --name ${{env.AZURE_WEBAPP_NAME}} --resource-group ${{vars.RESOURCE_GROUP_NAME}} --xml)
+             echo "profile_xml="$profile_xml >> $GITHUB_ENV
+            
+           
+     - name: Azure Deploy 
+       uses: azure/webapps-deploy@v2
+       with:
+         app-name: ${{env.AZURE_WEBAPP_NAME }}
+         publish-profile: ${{env.profile_xml }}
+         package:  .\WolfordApis.zip  
+
+         
+        
+        
+        
+      
+
+ 
+
