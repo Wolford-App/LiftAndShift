@@ -46,9 +46,9 @@ jobs:
     #   id: version
     #   run: |
     #     # Determine the version increment based on the branch being committed to
-    #     if [[ ${{ github.ref }} == refs/heads/main ]]; then
+    #     if [[ ${{ github.ref == 'refs/heads/main'}} ]]; then
     #       increment="major"
-    #     elif [[ ${{ github.ref }} == refs/heads/release/* ]]; then
+    #     elif [[ ${{ github.ref == 'refs/heads/release/*'}} ]]; then
     #       increment="minor"
     #     else
     #       increment="patch"
