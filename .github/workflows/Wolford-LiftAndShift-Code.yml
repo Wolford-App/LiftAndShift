@@ -82,15 +82,15 @@ jobs:
          name: build-artifact
          path: .
      
-     - name: Connect to Azure
-       uses: Azure/login@v1
-       with:
-        creds: '{"clientId":"${{secrets.AZ_AD_CLIENT_ID}}","clientSecret":"${{ secrets.AZ_AD_CLIENT_SECRET }}","subscriptionId":"${{ secrets.AZ_SUBSCRIPTION_ID }}","tenantId":"${{ secrets.AZ_ID_TENANT_ID }}"}'
-     
-     - name: Get publish profiler
-       run: |
-            $profile_xml=$(az webapp deployment list-publishing-profiles --name ${{env.AZURE_WEBAPP_NAME}} --resource-group ${{vars.RESOURCE_GROUP_NAME}} --xml)
-             echo "profile_xml="$profile_xml >> $GITHUB_ENV
+   # - name: Connect to Azure
+   #   uses: Azure/login@v1
+   #   with:
+   #    creds: '{"clientId":"${{secrets.AZ_AD_CLIENT_ID}}","clientSecret":"${{ secrets.AZ_AD_CLIENT_SECRET }}","subscriptionId":"${{ secrets.AZ_SUBSCRIPTION_ID }}","tenantId":"${{ secrets.AZ_ID_TENANT_ID }}"}'
+   # 
+   # - name: Get publish profiler
+   #   run: |
+   #        $profile_xml=$(az webapp deployment list-publishing-profiles --name ${{env.AZURE_WEBAPP_NAME}} --resource-group ${{vars.RESOURCE_GROUP_NAME}} --xml)
+   #         echo "profile_xml="$profile_xml >> $GITHUB_ENV
             
            
      - name: Azure Deploy 
