@@ -1,11 +1,11 @@
 name: Wolford-LiftAndShift-Code
-
-on:
-  push:
-    branches:
-      - master
-    paths:
-      - Code/**
+on: workflow_dispatch
+#on:
+# push:
+#   branches:
+#     - master
+#   paths:
+#     - Code/**
       
 env:
   AZURE_WEBAPP_NAME: ${{ vars.AZURE_WEBAPP_NAME }}
