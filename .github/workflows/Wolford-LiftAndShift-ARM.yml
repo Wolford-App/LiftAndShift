@@ -1,10 +1,10 @@
 name: 'Wolford-LiftAndShift-ARM'
-on:
-  push:
-    branches:
-      - master
-    paths:
-      - Code/**
+on:  workflow_dispatch
+# push:
+#   branches:
+#     - master
+#   paths:
+#     - Code/**
       
 
 permissions:
